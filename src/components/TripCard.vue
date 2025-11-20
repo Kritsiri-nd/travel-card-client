@@ -48,7 +48,7 @@ const getMapLink = (lat?: number, long?: number) => {
 };
 
 const galleriaPT = {
-    root: { class: "inline-galleria bg-white rounded-[2rem] overflow-hidden shadow-lg" },
+    root: { class: "inline-galleria bg-white rounded-[2rem] overflow-hidden shadow-lg !border-0" },
     content: { class: "bg-transparent" },
     itemWrapper: { class: "rounded-[2rem] overflow-hidden" },
 };
@@ -68,9 +68,8 @@ const galleriaPT = {
             :pt="galleriaPT"
         >
             <template #item="slotProps">
-                <div class="relative cursor-zoom-in bg-slate-900/10" @click="openFullScreen(slotProps.index)">
-                    <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" class="w-full h-[440px] object-cover rounded-none" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent pointer-events-none"></div>
+                <div class="relative bg-slate-900/10 h-[400px] w-[400px] cursor-pointer" @click="openFullScreen(slotProps.index)">
+                    <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" class="w-full h-full object-cover rounded-none" />
                     <div class="absolute top-4 left-4 flex flex-wrap gap-2">
                         <button
                             v-for="tag in trip.tags?.slice(0, 3)"
@@ -155,7 +154,7 @@ const galleriaPT = {
             :autoPlay="false"
         >
             <template #item="slotProps">
-                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" class="w-full h-full object-contain" />
+                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" class="max-w-[1000px] max-h-[800px] object-contain" />
             </template>
         </Galleria>
     </article>
