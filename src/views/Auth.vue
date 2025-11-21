@@ -23,9 +23,6 @@ const registerError = ref<string | null>(null);
 const loginLoading = ref(false);
 const registerLoading = ref(false);
 
-const touchStart = ref(0);
-const touchEnd = ref(0);
-
 function resolveAuthServerBase(apiBase: string) {
     try {
         const url = new URL(apiBase, window.location.origin);
@@ -44,17 +41,6 @@ const togglePanel = (value: boolean) => {
     isSignUp.value = value;
     loginError.value = null;
     registerError.value = null;
-};
-
-const handleTouchStart = (e: TouchEvent) => {
-    touchStart.value = e.changedTouches[0].screenX;
-};
-
-const handleTouchEnd = (e: TouchEvent) => {
-    touchEnd.value = e.changedTouches[0].screenX;
-    const threshold = 50;
-    if (touchEnd.value < touchStart.value - threshold) isSignUp.value = true;
-    if (touchEnd.value > touchStart.value + threshold) isSignUp.value = false;
 };
 
 const handleLogin = async () => {
@@ -139,41 +125,46 @@ const handleRegister = async () => {
 </script>
 
 <template>
-    <div class="page" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+    <div class="page">
         <div class="card" :class="{ 'right-panel-active': isSignUp }">
             <div class="form-container sign-up-container">
                 <form class="form" @submit.prevent="handleRegister">
                     <h1 class="title">สร้างบัญชีใหม่</h1>
 
+                    <div class="social-row">
+                        <button type="button" class="social-btn" @click="redirectToProvider('google')" aria-label="สมัครด้วย Google">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z"
+                                    fill="#4285F4" />
+                                <path
+                                    d="M12.2401 24.0008C15.4766 24.0008 18.2059 22.9382 20.1945 21.1039L16.3276 18.1055C15.2517 18.8375 13.8627 19.252 12.2445 19.252C9.11388 19.252 6.45946 17.1399 5.50705 14.3003H1.5166V17.3912C3.55371 21.4434 7.7029 24.0008 12.2401 24.0008Z"
+                                    fill="#34A853" />
+                                <path
+                                    d="M5.50253 14.3003C5.00236 12.8099 5.00236 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z"
+                                    fill="#FBBC05" />
+                                <path
+                                    d="M12.2401 4.74966C13.9509 4.7232 15.6044 5.36697 16.8434 6.54867L20.2695 3.12262C18.1001 1.0855 15.2208 -0.034466 12.2401 0.000808666C7.7029 0.000808666 3.55371 2.55822 1.5166 6.61481L5.50264 9.70575C6.45064 6.86173 9.10947 4.74966 12.2401 4.74966Z"
+                                    fill="#EA4335" />
+                            </svg>
+                        </button>
+                        <button type="button" class="social-btn line" @click="redirectToProvider('line')" aria-label="สมัครด้วย LINE">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path
+                                    d="M22.4 10.8c0-5.2-5-9.5-10.8-9.5C5.4 1.3.8 5.6.8 10.8c0 4.7 4.2 8.6 9 9.4-.1.8-.3 1.7-.5 2.4-.1.4-.2.8-.3 1.1 0 .1-.1.2 0 .3 0 .2.2.3.4.2 1.8-1.1 5-3.2 6.8-5.5 3.8-.7 6.2-4.1 6.2-7.9z" />
+                            </svg>
+                        </button>
+                    </div>
 
-
-
+                    <span class="hint">หรือสมัครด้วยอีเมล</span>
 
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </span>
                         <input v-model="registerForm.fullName" type="text" placeholder="ชื่อ-นามสกุล" required />
                     </div>
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                            </svg>
-                        </span>
                         <input v-model="registerForm.email" type="email" placeholder="อีเมล" required />
                     </div>
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </span>
                         <input :type="showRegisterPassword ? 'text' : 'password'" v-model="registerForm.password"
                             placeholder="รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)" required />
                         <button type="button" class="show-btn" @click="showRegisterPassword = !showRegisterPassword">
@@ -181,12 +172,6 @@ const handleRegister = async () => {
                         </button>
                     </div>
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </span>
                         <input :type="showRegisterPassword ? 'text' : 'password'" v-model="registerForm.confirm"
                             placeholder="ยืนยันรหัสผ่าน" required />
                     </div>
@@ -203,17 +188,14 @@ const handleRegister = async () => {
                     </button>
 
                     <p class="swap mobile">
-                        มีบัญชีอยู่แล้ว?
-                        <span @click="togglePanel(false)">เข้าสู่ระบบ</span>
+                        มีบัญชีอยู่แล้ว? <span @click="togglePanel(false)">เข้าสู่ระบบ</span>
                     </p>
                 </form>
             </div>
 
             <div class="form-container sign-in-container">
                 <form class="form" @submit.prevent="handleLogin">
-
-
-                    <h1 class="title">ยินดีต้อนรับกลับ</h1>
+                    <h1 class="title">เข้าสู่ระบบ</h1>
 
                     <div class="social-row">
                         <button type="button" class="social-btn" @click="redirectToProvider('google')"
@@ -233,8 +215,7 @@ const handleRegister = async () => {
                                     fill="#EA4335" />
                             </svg>
                         </button>
-                        <button type="button" class="social-btn line" @click="redirectToProvider('line')"
-                            aria-label="เข้าสู่ระบบด้วย LINE">
+                        <button type="button" class="social-btn line" @click="redirectToProvider('line')" aria-label="เข้าสู่ระบบด้วย LINE">
                             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
                                 <path
                                     d="M22.4 10.8c0-5.2-5-9.5-10.8-9.5C5.4 1.3.8 5.6.8 10.8c0 4.7 4.2 8.6 9 9.4-.1.8-.3 1.7-.5 2.4-.1.4-.2.8-.3 1.1 0 .1-.1.2 0 .3 0 .2.2.3.4.2 1.8-1.1 5-3.2 6.8-5.5 3.8-.7 6.2-4.1 6.2-7.9z" />
@@ -245,23 +226,11 @@ const handleRegister = async () => {
                     <span class="hint">หรือใช้บัญชีของคุณ</span>
 
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                            </svg>
-                        </span>
                         <input v-model="loginForm.email" type="email" placeholder="อีเมล" required />
                     </div>
                     <div class="field">
-                        <span class="icon">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </span>
-                        <input :type="showLoginPassword ? 'text' : 'password'" v-model="loginForm.password"
-                            placeholder="รหัสผ่าน" required />
+                        <input :type="showLoginPassword ? 'text' : 'password'" v-model="loginForm.password" placeholder="รหัสผ่าน"
+                            required />
                         <button type="button" class="show-btn" @click="showLoginPassword = !showLoginPassword">
                             {{ showLoginPassword ? "ซ่อน" : "แสดง" }}
                         </button>
@@ -274,8 +243,7 @@ const handleRegister = async () => {
                     </button>
 
                     <p class="swap mobile">
-                        ยังไม่มีบัญชี?
-                        <span @click="togglePanel(true)">สมัครสมาชิก</span>
+                        ยังไม่มีบัญชี? <span @click="togglePanel(true)">สมัครสมาชิก</span>
                     </p>
                 </form>
             </div>
@@ -285,12 +253,12 @@ const handleRegister = async () => {
                     <div class="overlay-panel overlay-left">
                         <h2>ยินดีต้อนรับกลับ!</h2>
                         <p>หากมีบัญชีอยู่แล้ว เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
-                        <button class="ghost-btn" @click="togglePanel(false)">ไปหน้าเข้าสู่ระบบ</button>
+                        <button class="ghost-btn" @click="togglePanel(false)">หน้าเข้าสู่ระบบ</button>
                     </div>
                     <div class="overlay-panel overlay-right">
                         <h2>สวัสดีนักเดินทาง!</h2>
                         <p>กรอกข้อมูลของคุณแล้วเริ่มการเดินทางไปกับเรา</p>
-                        <button class="ghost-btn" @click="togglePanel(true)">ไปหน้าสมัครสมาชิก</button>
+                        <button class="ghost-btn" @click="togglePanel(true)">หน้าสมัครสมาชิก</button>
                     </div>
                 </div>
             </div>
@@ -312,9 +280,7 @@ const handleRegister = async () => {
 
 .card {
     position: relative;
-    background: rgba(255, 255, 255, 0.86);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(255, 255, 255, 0.88);
     border-radius: 28px;
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
     overflow: hidden;
@@ -329,12 +295,17 @@ const handleRegister = async () => {
     top: 0;
     height: 100%;
     transition: all 0.7s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
 }
 
 .sign-in-container {
     left: 0;
     width: 100%;
-    z-index: 2;
+    z-index: 5;
+    opacity: 1;
 }
 
 .sign-up-container {
@@ -346,12 +317,14 @@ const handleRegister = async () => {
 
 .card.right-panel-active .sign-in-container {
     transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .card.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;
-    z-index: 5;
+    z-index: 6;
     animation: show 0.6s;
 }
 
@@ -363,7 +336,8 @@ const handleRegister = async () => {
     height: 100%;
     overflow: hidden;
     transition: transform 0.7s ease-in-out;
-    z-index: 100;
+    z-index: 3;
+    pointer-events: none;
 }
 
 .card.right-panel-active .overlay-container {
@@ -371,7 +345,7 @@ const handleRegister = async () => {
 }
 
 .overlay {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.28), rgba(37, 99, 235, 0.28));
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(37, 99, 235, 0.12));
     color: #fff;
     position: relative;
     left: -100%;
@@ -379,7 +353,7 @@ const handleRegister = async () => {
     width: 200%;
     transform: translateX(0);
     transition: transform 0.7s ease-in-out;
-    background-image: linear-gradient(135deg, rgba(6, 182, 212, 0.28), rgba(26, 86, 219, 0.28)),
+    background-image: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(26, 86, 219, 0.12)),
         url("https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=2021&q=80");
     background-size: cover;
     background-position: center;
@@ -401,6 +375,7 @@ const handleRegister = async () => {
     width: 50%;
     padding: 0 48px;
     transition: transform 0.7s ease-in-out;
+    pointer-events: auto;
 }
 
 .overlay-left {
@@ -420,70 +395,47 @@ const handleRegister = async () => {
 }
 
 .form {
-    background: #fff;
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    height: 100%;
-    padding: 48px 40px;
-    gap: 12px;
+    width: 100%;
+    max-width: 520px;
+    padding: 36px;
+    gap: 14px;
 }
 
 .title {
     font-size: 28px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 8px;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.brand-icon {
-    height: 34px;
-    width: 34px;
-    border-radius: 10px;
-    background: #06b6d4;
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-}
-
-.brand-text {
-    font-weight: 800;
-    font-size: 18px;
-    color: #0f172a;
+    margin-bottom: 6px;
 }
 
 .social-row {
     display: flex;
-    gap: 12px;
-    margin: 10px 0;
+    gap: 14px;
+    margin: 12px 0;
 }
 
 .social-btn {
-    height: 44px;
-    width: 44px;
+    height: 46px;
+    width: 46px;
     border-radius: 999px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(226, 232, 240, 0.9);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    background: rgba(255, 255, 255, 0.9);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .social-btn:hover {
     transform: translateY(-1px);
     border-color: #94a3b8;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.1);
+    background: #fff;
 }
 
 .social-btn.line {
@@ -501,33 +453,25 @@ const handleRegister = async () => {
 .field {
     width: 100%;
     position: relative;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .field input {
     width: 100%;
-    border-radius: 14px;
-    border: 1px solid #e2e8f0;
-    padding: 12px 12px 12px 38px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    padding: 13px 12px;
     font-size: 14px;
     color: #0f172a;
-    background: #f8fafc;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.82);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .field input:focus {
     outline: none;
     border-color: #06b6d4;
-    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+    box-shadow: 0 12px 32px rgba(6, 182, 212, 0.2);
     background: #fff;
-}
-
-.icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
 }
 
 .show-btn {
@@ -549,7 +493,7 @@ const handleRegister = async () => {
     gap: 10px;
     font-size: 13px;
     color: #475569;
-    margin-top: 6px;
+    margin-top: 8px;
 }
 
 .agree input {
@@ -628,13 +572,11 @@ const handleRegister = async () => {
 }
 
 @keyframes show {
-
     0%,
     49.99% {
         opacity: 0;
         z-index: 1;
     }
-
     50%,
     100% {
         opacity: 1;
@@ -643,14 +585,13 @@ const handleRegister = async () => {
 }
 
 @media (min-width: 768px) {
-
     .sign-in-container,
     .sign-up-container {
         width: 50%;
     }
-
     .card.right-panel-active .sign-in-container {
         transform: translateX(100%);
+        opacity: 0;
     }
 }
 
@@ -658,11 +599,9 @@ const handleRegister = async () => {
     .card {
         min-height: 620px;
     }
-
     .desktop {
         display: block;
     }
-
     .mobile {
         display: none;
     }

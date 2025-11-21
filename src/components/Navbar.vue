@@ -61,7 +61,6 @@ const handleLogout = () => {
                             </div>
                             <div class="text-sm">
                                 <p class="font-semibold leading-tight">{{ user?.displayName || user?.email }}</p>
-                                <p class="text-slate-400 text-xs">กำลังใช้งาน</p>
                             </div>
                         </div>
                         <button
