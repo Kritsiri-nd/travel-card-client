@@ -106,9 +106,11 @@ const galleriaPT = {
                 </span>
             </div>
 
-            <h2 class="text-2xl font-semibold text-slate-900 mb-3 leading-snug group-hover:text-cyan-600 transition-colors duration-300">
-                {{ trip.title || "Untitled Trip" }}
-            </h2>
+            <router-link :to="{ name: 'trip-details', params: { id: trip.id } }">
+                <h2 class="text-2xl font-semibold text-slate-900 mb-3 leading-snug group-hover:text-cyan-600 transition-colors duration-300">
+                    {{ trip.title || "Untitled Trip" }}
+                </h2>
+            </router-link>
 
             <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6">
                 {{ excerpt }}
@@ -132,13 +134,14 @@ const galleriaPT = {
                     {{ mapLabel ?? "Location" }}
                 </a>
 
-                <button
+                <router-link
+                    :to="{ name: 'trip-details', params: { id: trip.id } }"
                     class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300 shadow-sm"
                 >
                     <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                </button>
+                </router-link>
             </div>
         </div>
 
