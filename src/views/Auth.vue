@@ -275,7 +275,7 @@ const handleRegister = async () => {
     background: linear-gradient(180deg, #e2e8f0, #f8fafc);
     padding: 2.5rem 1.25rem;
     font-family: "Inter", system-ui, -apple-system, sans-serif;
-    overflow: hidden;
+    overflow-y: auto; /* Allow page scroll if needed */
 }
 
 .card {
@@ -288,13 +288,15 @@ const handleRegister = async () => {
     max-width: 1100px;
     min-height: 640px;
     transition: transform 0.6s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-container {
     position: absolute;
     top: 0;
     height: 100%;
-    transition: all 0.7s ease-in-out;
+    transition: all 0.6s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -303,14 +305,13 @@ const handleRegister = async () => {
 
 .sign-in-container {
     left: 0;
-    width: 100%;
-    z-index: 5;
-    opacity: 1;
+    width: 50%;
+    z-index: 2;
 }
 
 .sign-up-container {
     left: 0;
-    width: 100%;
+    width: 50%;
     opacity: 0;
     z-index: 1;
 }
@@ -324,7 +325,7 @@ const handleRegister = async () => {
 .card.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;
-    z-index: 6;
+    z-index: 5;
     animation: show 0.6s;
 }
 
@@ -335,9 +336,8 @@ const handleRegister = async () => {
     width: 50%;
     height: 100%;
     overflow: hidden;
-    transition: transform 0.7s ease-in-out;
-    z-index: 3;
-    pointer-events: none;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
 }
 
 .card.right-panel-active .overlay-container {
@@ -352,7 +352,7 @@ const handleRegister = async () => {
     height: 100%;
     width: 200%;
     transform: translateX(0);
-    transition: transform 0.7s ease-in-out;
+    transition: transform 0.6s ease-in-out;
     background-image: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(26, 86, 219, 0.12)),
         url("https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=2021&q=80");
     background-size: cover;
@@ -374,8 +374,8 @@ const handleRegister = async () => {
     height: 100%;
     width: 50%;
     padding: 0 48px;
-    transition: transform 0.7s ease-in-out;
-    pointer-events: auto;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
 }
 
 .overlay-left {
@@ -388,6 +388,7 @@ const handleRegister = async () => {
 
 .overlay-right {
     right: 0;
+    transform: translateX(0);
 }
 
 .card.right-panel-active .overlay-right {
@@ -401,8 +402,8 @@ const handleRegister = async () => {
     align-items: center;
     text-align: center;
     width: 100%;
-    max-width: 520px;
-    padding: 36px;
+    max-width: 420px; /* Reduced slightly for better mobile fit */
+    padding: 0; /* Padding handled by container */
     gap: 14px;
 }
 
@@ -494,6 +495,7 @@ const handleRegister = async () => {
     font-size: 13px;
     color: #475569;
     margin-top: 8px;
+    text-align: left;
 }
 
 .agree input {
@@ -552,8 +554,8 @@ const handleRegister = async () => {
 }
 
 .swap {
-    margin-top: 10px;
-    font-size: 13px;
+    margin-top: 16px;
+    font-size: 14px;
     color: #475569;
 }
 
@@ -564,11 +566,11 @@ const handleRegister = async () => {
 }
 
 .desktop {
-    display: none;
+    display: block;
 }
 
 .mobile {
-    display: block;
+    display: none;
 }
 
 @keyframes show {
@@ -584,26 +586,82 @@ const handleRegister = async () => {
     }
 }
 
-@media (min-width: 768px) {
-    .sign-in-container,
-    .sign-up-container {
-        width: 50%;
+/* Mobile Responsive Styles */
+@media (max-width: 767px) {
+    .page {
+        padding: 1rem;
+        align-items: flex-start; /* Allow scrolling from top */
+        padding-top: 2rem;
     }
-    .card.right-panel-active .sign-in-container {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
 
-@media (min-width: 1024px) {
     .card {
-        min-height: 620px;
+        min-height: auto; /* Let content dictate height */
+        height: auto;
+        padding-bottom: 20px;
+        max-width: 100%;
     }
+
+    .overlay-container {
+        display: none; /* Hide desktop overlay */
+    }
+
+    .form-container {
+        position: absolute; /* Default to absolute/hidden */
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: 0;
+        padding: 32px 20px;
+        opacity: 0;
+        pointer-events: none;
+        transform: none !important; /* Disable sliding */
+        transition: opacity 0.3s ease;
+    }
+
+    /* Active State Logic for Mobile */
+    /* When NOT right-panel-active (Login mode) */
+    .sign-in-container {
+        position: relative; /* Make it take up space */
+        opacity: 1;
+        z-index: 5;
+        pointer-events: auto;
+    }
+
+    .sign-up-container {
+        position: absolute;
+        opacity: 0;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* When right-panel-active (Register mode) */
+    .card.right-panel-active .sign-in-container {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        transform: none;
+    }
+
+    .card.right-panel-active .sign-up-container {
+        position: relative; /* Make it take up space */
+        opacity: 1;
+        z-index: 5;
+        pointer-events: auto;
+        transform: none;
+        animation: none;
+    }
+
     .desktop {
-        display: block;
-    }
-    .mobile {
         display: none;
+    }
+
+    .mobile {
+        display: block;
+        text-align: center;
+    }
+    
+    .title {
+        font-size: 24px;
     }
 }
 </style>
