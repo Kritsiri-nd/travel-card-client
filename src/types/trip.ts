@@ -8,4 +8,9 @@ export type Trip = {
     longitude?: number;
     createdAt?: string;
     updatedAt?: string;
+    author?: {
+        name: string;
+        avatarUrl?: string;
+        bio?: string;
+    };
 };

@@ -4,15 +4,20 @@ import Auth from "../views/Auth.vue";
 import OAuthCallback from "../views/OAuthCallback.vue";
 
 const routes = [
-    { path: "/", name: "home", component: Home },
-    { path: "/login", name: "login", component: Auth },
-    { path: "/register", name: "register", component: Auth },
-    { path: "/auth/callback", name: "auth-callback", component: OAuthCallback },
+  { path: "/", name: "home", component: Home },
+  { path: "/login", name: "login", component: Auth },
+
+  {
+    path: "/trips/:id",
+    name: "trip-details",
+    component: () => import("../views/TripDetails.vue"), // Added TripDetails route
+  },
+  { path: "/auth/callback", name: "auth-callback", component: OAuthCallback },
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;
