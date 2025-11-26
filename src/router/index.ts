@@ -10,7 +10,13 @@ const routes = [
   {
     path: "/trips/:id",
     name: "trip-details",
-    component: () => import("../views/TripDetails.vue"), // Added TripDetails route
+    component: () => import("../views/TripDetails.vue"),
+  },
+  {
+    path: "/my-trips",
+    name: "my-trips",
+    component: () => import("../views/MyTrips.vue"),
+    meta: { requiresAuth: true },
   },
   { path: "/auth/callback", name: "auth-callback", component: OAuthCallback },
 ];
