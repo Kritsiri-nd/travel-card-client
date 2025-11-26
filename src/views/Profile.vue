@@ -28,6 +28,10 @@ const handleFormSubmit = () => {
   isModalOpen.value = true;
 };
 
+const handleValidationFailed = () => {
+  error.value = "Validation failed. Please check the form.";
+};
+
 const handleConfirmSave = async () => {
   isModalOpen.value = false;
   await updateProfile();
@@ -94,6 +98,7 @@ onMounted(async () => {
         :saving="saving"
         @update:form="setForm"
         @submit="handleFormSubmit"
+        @validation-failed="handleValidationFailed"
         @uploadAvatar="handleAvatarUpload"
       />
     </div>

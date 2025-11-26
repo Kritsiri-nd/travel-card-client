@@ -48,6 +48,22 @@ export default function useProfile() {
     { immediate: true }
   );
 
+  watch(successMessage, (val) => {
+    if (val) {
+      setTimeout(() => {
+        successMessage.value = null;
+      }, 3000);
+    }
+  });
+
+  watch(error, (val) => {
+    if (val) {
+      setTimeout(() => {
+        error.value = null;
+      }, 3000);
+    }
+  });
+
   const loadProfile = async () => {
     if (!token.value) return;
 
@@ -80,7 +96,7 @@ export default function useProfile() {
       const payload = {
         displayName: form.value.displayName?.trim() || null,
         avatarUrl: form.value.avatarUrl?.trim() || null,
-        bio: form.value.bio?.trim() || null,
+        bio: form.value.bio?.trim() ?? "",
       };
 
       const response = await fetch(`${API_BASE_URL}/auth/me`, {

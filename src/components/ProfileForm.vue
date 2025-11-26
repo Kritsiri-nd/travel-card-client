@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import type { ProfileFormState } from "../composables/useProfile";
 
 const props = defineProps<{
@@ -13,9 +13,11 @@ const emit = defineEmits<{
   (e: "update:form", value: ProfileFormState): void;
   (e: "submit"): void;
   (e: "uploadAvatar", file: File): void;
+  (e: "validation-failed"): void;
 }>();
 
 const isBusy = computed(() => props.saving || props.loading);
+const errors = ref<{ displayName?: string }>({});
 
 const avatarPreview = computed(() => {
   const base = props.form.displayName?.trim() || props.form.email || "Traveler";
@@ -30,6 +32,7 @@ const displayNameModel = computed({
   get: () => props.form.displayName,
   set: (value: string) => {
     emit("update:form", { ...props.form, displayName: value });
+    if (errors.value.displayName) validate();
   },
 });
 
@@ -39,6 +42,30 @@ const bioModel = computed({
     emit("update:form", { ...props.form, bio: value });
   },
 });
+
+const validate = () => {
+  errors.value = {};
+  let isValid = true;
+
+  if (!props.form.displayName?.trim()) {
+    errors.value.displayName = "Display name is required.";
+    isValid = false;
+  } else if (!/^[a-zA-Z0-9\s\-_]+$/.test(props.form.displayName)) {
+    errors.value.displayName =
+      "Display name can only contain letters, numbers, spaces, hyphens, and underscores.";
+    isValid = false;
+  }
+
+  return isValid;
+};
+
+const handleSubmit = () => {
+  if (validate()) {
+    emit("submit");
+  } else {
+    emit("validation-failed");
+  }
+};
 
 const onFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
@@ -101,7 +128,7 @@ const triggerAvatarSelect = () => {
 
     <!-- Right Column: Form -->
     <div class="lg:col-span-8 space-y-6">
-      <form @submit.prevent="emit('submit')" class="space-y-8">
+      <form @submit.prevent="handleSubmit" class="space-y-8">
         <!-- Personal Info Section -->
         <div class="space-y-6">
           <div class="grid gap-6 md:grid-cols-2">
@@ -116,7 +143,14 @@ const triggerAvatarSelect = () => {
                 maxlength="50"
                 placeholder="e.g. Alex Roamer"
                 class="w-full rounded-xl bg-white border border-slate-300 text-slate-900 px-4 py-3 text-sm placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 transition-all disabled:opacity-50 disabled:bg-slate-50"
+                :class="{
+                  'border-red-300 focus:border-red-500 focus:ring-red-500/50':
+                    errors.displayName,
+                }"
               />
+              <p v-if="errors.displayName" class="text-xs text-red-500 ml-1">
+                {{ errors.displayName }}
+              </p>
             </div>
 
             <div class="space-y-2">
