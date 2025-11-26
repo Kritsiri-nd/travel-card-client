@@ -28,10 +28,13 @@ const form = ref({
   longitude: "",
 });
 
+const errors = ref<{ description?: string; photos?: string }>({});
+
 watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen) {
+      errors.value = {}; // Clear errors on open
       if (props.mode === "edit" && props.initialData) {
         form.value = {
           title: props.initialData.title || "",
@@ -86,8 +89,30 @@ const handleMapClick = (event: any) => {
   form.value.longitude = event.latLng.lng().toFixed(6);
 };
 
+const validate = () => {
+  errors.value = {};
+  let isValid = true;
+
+  if (!form.value.description?.trim()) {
+    errors.value.description = "Description is required.";
+    isValid = false;
+  }
+
+  if (form.value.photos.length === 0) {
+    errors.value.photos = "At least 1 image is required.";
+    isValid = false;
+  } else if (form.value.photos.length > 3) {
+    errors.value.photos = "Maximum 3 images allowed.";
+    isValid = false;
+  }
+
+  return isValid;
+};
+
 const handleSubmit = () => {
-  emit("save", form.value);
+  if (validate()) {
+    emit("save", form.value);
+  }
 };
 </script>
 
@@ -147,12 +172,16 @@ const handleSubmit = () => {
             v-model="form.description"
             rows="3"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all"
+            :class="{ 'border-red-300 focus:ring-red-500': errors.description }"
           ></textarea>
+          <p v-if="errors.description" class="text-xs text-red-500 mt-1">
+            {{ errors.description }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2"
-            >Images</label
+            >Images ({{ form.photos.length }}/3)</label
           >
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-4">
             <div
@@ -185,6 +214,7 @@ const handleSubmit = () => {
               </button>
             </div>
             <label
+              v-if="form.photos.length < 3"
               class="aspect-square rounded-lg border-2 border-dashed border-gray-300 hover:border-cyan-500 hover:bg-cyan-50 flex flex-col items-center justify-center cursor-pointer transition-colors"
             >
               <input
@@ -212,6 +242,9 @@ const handleSubmit = () => {
               <span v-else class="text-xs text-gray-500">Uploading...</span>
             </label>
           </div>
+          <p v-if="errors.photos" class="text-xs text-red-500 mt-1">
+            {{ errors.photos }}
+          </p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
