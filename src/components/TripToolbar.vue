@@ -11,9 +11,12 @@ defineEmits<{
 
 <template>
   <div
-    class="bg-white rounded-t-xl p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm"
+    class="bg-white rounded-t-xl p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 shadow-sm"
   >
-    <div class="flex items-center gap-2">
+    <div
+      class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start"
+    >
+      <span class="text-gray-600 font-semibold sm:hidden">Add trip</span>
       <button
         @click="$emit('create')"
         class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
