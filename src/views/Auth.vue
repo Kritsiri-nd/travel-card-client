@@ -285,14 +285,14 @@ const handleRegister = async () => {
             <h2>ยินดีต้อนรับกลับ!</h2>
             <p>หากมีบัญชีอยู่แล้ว เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
             <button class="ghost-btn" @click="togglePanel(false)">
-              หน้าเข้าสู่ระบบ
+              เข้าสู่ระบบ
             </button>
           </div>
           <div class="overlay-panel overlay-right">
             <h2>สวัสดีนักเดินทาง!</h2>
             <p>กรอกข้อมูลของคุณแล้วเริ่มการเดินทางไปกับเรา</p>
             <button class="ghost-btn" @click="togglePanel(true)">
-              หน้าสมัครสมาชิก
+              สมัครสมาชิก
             </button>
           </div>
         </div>
